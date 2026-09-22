@@ -2,41 +2,41 @@ Dev-ops
 Задания на семестр "Скрипты Python для автоматизации управление архитектурой""
 
 <details>
-<summary><b> Задание 2.1 (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Задание 2.1 </b></summary>
 
 </details>
 
 <details>
-<summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Ответ </b></summary>
 
 </details>
 
 <details>
-<summary><b> Задание 2.2 (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Задание 2.2 </b></summary>
 
 </details>
 
 <details>
-<summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Ответ </b></summary>
 
 </details>
 
 <details>
-<summary><b> Задание 2.3 (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Задание 2.3 </b></summary>
 
 </details>
 
 <details>
-<summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Ответ </b></summary>
 
 </details>
 
 <details>
-<summary><b> Задание 2.4 (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Задание 2.4 </b></summary>
 
 </details>
 
 <details>  
-<summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
+<summary><b> Ответ </b></summary>
 
 </details>
