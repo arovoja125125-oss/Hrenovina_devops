@@ -34,7 +34,7 @@ CHAT_ID = "your_chat_id"
 
 
 
-# Поиск IP адресов с ошибками 404
+ Поиск IP адресов с ошибками 404
 
  with open(LOG_FILE, "r") as f:
 
@@ -46,7 +46,7 @@ CHAT_ID = "your_chat_id"
 
 
 
-# Если какой-то IP совершил более 50 ошибок 404
+ Если какой-то IP совершил более 50 ошибок 404
 
 for ip, count in Counter(ips).items():
 
