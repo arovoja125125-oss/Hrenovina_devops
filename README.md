@@ -20,6 +20,8 @@ Dev-ops
 <summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
 
 </details>
+
+<details>
 <summary><b> Задание 2.3 (Нажмите, чтобы открыть)</b></summary>
 
 </details>
