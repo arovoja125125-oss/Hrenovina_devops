@@ -36,7 +36,7 @@ CHAT_ID = "your_chat_id"
 
 # Поиск IP адресов с ошибками 404
 
-with open(LOG_FILE, "r") as f:
+ with open(LOG_FILE, "r") as f:
 
     log_content = f.read()
 
