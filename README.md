@@ -29,12 +29,12 @@ Dev-ops
 
 </details>
 
+<details>
 <summary><b> Задание 2.4 (Нажмите, чтобы открыть)</b></summary>
 
 </details>
 
-<details>
-  
+<details>  
 <summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
 
 </details>
