@@ -17,43 +17,42 @@ Dev-ops
 
 _________________________________________________
 
- import re
+     import re
 
-from collections import Counter
+    from collections import Counter
 
-import requests
-
-
-
-LOG_FILE = "/var/log/nginx/access.log"
-
-TELEGRAM_TOKEN = "your_bot_token"
-
-CHAT_ID = "your_chat_id"
+    import requests
 
 
 
-# Поиск IP адресов с ошибками 404
+    LOG_FILE = "/var/log/nginx/access.log"
 
-with open(LOG_FILE, "r") as f:
+    TELEGRAM_TOKEN = "your_bot_token"
 
-    log_content = f.read()
-
-    # Ищем IP и код ответа 404
-
-    ips = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*?" 404', log_content)
+    CHAT_ID = "your_chat_id"
 
 
 
-# Если какой-то IP совершил более 50 ошибок 404
+    # Поиск IP адресов с ошибками 404
 
-for ip, count in Counter(ips).items():
+    with open(LOG_FILE, "r") as f:
 
-    if count > 50:
+        log_content = f.read()
 
-        msg = f"Обнаружена подозрительная активность! IP {ip} получил {count} ошибок 404."
+        # Ищем IP и код ответа 404
 
-        requests.post(f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg})
+        ips = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*?" 404', log_content)
+
+
+
+    # Если какой-то IP совершил более 50 ошибок 404
+    for ip, count in Counter(ips).items():
+
+        if count > 50:
+
+            msg = f"Обнаружена подозрительная активность! IP {ip} получил {count} ошибок 404."
+
+            requests.post(f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg})
 </details>
 
 <details>
