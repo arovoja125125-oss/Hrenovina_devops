@@ -20,7 +20,6 @@ Dev-ops
 <summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
 е
 </details>
-
 <summary><b> Задание 2.3 (Нажмите, чтобы открыть)</b></summary>
 л
 </details>
@@ -29,7 +28,6 @@ Dev-ops
 <summary><b> Ответ (Нажмите, чтобы открыть)</b></summary>
 в
 </details>
-
 <summary><b> Задание 2.4 (Нажмите, чтобы открыть)</b></summary>
 а
 </details>
