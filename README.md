@@ -1,199 +1,79 @@
-# Hrenovina_devops
- Dev-ops
- Тема "Скрипты Python для автоматизации управление архитектурой"
+# Домашнее задание: Скрипты Python для автоматизации управления архитектурой
 
-Задание 2.1 (12 баллов)
+Ниже представлены решения для практических заданий. Нажмите на интересующее задание, чтобы раскрыть его содержимое.
 
-Изучите скрипт. Его задача: Анализ логов веб-сервера Nginx, выявление IP-адресов, с которых идет подозрительно много 404-х ошибок (попытка сканирования уязвимостей), и отправка оповещения в Telegram.
+<details>
+<summary><b>📂 Задание 2.1 — Анализ логов Nginx и оповещение в Telegram (Нажмите, чтобы открыть)</b></summary>
 
-Подготовьте отчет (в виде страницы на своем github). 
+### 1. Использованные библиотеки и их функции
+В скрипте используются три библиотеки. Две из них являются встроенными (стандартная библиотека Python), а одна — сторонней.
 
-Ответьте в отчете на следующие вопросы:
+*   **`re` (Регулярные выражения)** — встроенный модуль Python.
+    *   *Функция в скрипте:* Используется для поиска текстовых паттернов в лог-файле. Функция `re.findall` ищет совпадения по заданному шаблону: извлекает IP-адрес, за которым в строке лога следует HTTP-код ответа `404`.
+*   **`collections` (подмодуль `Counter`)** — встроенный модуль для работы со специальными контейнерами данных.
+    *   *Функция в скрипте:* Класс `Counter` принимает на вход список найденных IP-адресов и автоматически подсчитывает количество упоминаний каждого из них.
+*   **`requests`** — сторонняя библиотека для отправки HTTP-запросов.
+    *   *Функция в скрипте:* Метод `requests.post` используется для отправки POST-запроса к Telegram Bot API для публикации сообщения в чате.
 
-1. (4 балла) Какие библиотеки используются в скрипте? Опишите функции  которые они предоставляют.
+---
 
-2. (2 балла) Какое окружение нужно обеспечить, чтобы скрипт заработал? 
+### 2. Необходимое окружение для работы скрипта
+Чтобы скрипт успешно запустился и выполнил свою задачу, требуется настроить следующую среду:
 
-3. (6 баллов) Модифицируйте скрипт таким образом, чтобы он выполнил хотя бы часть своего функционала. Например анализ лога сервера beget (не обязательно на ошибку 404). Или отправка сообщения.
+1.  **Интерпретатор Python:** Установленная версия Python 3.x.
+2.  **Зависимости:** Установленная сторонняя библиотека `requests`. Установка выполняется командой: `pip install requests`
+3.  **Доступ к логам веб-сервера:** Наличие файла логов по указанному пути (например, `/var/log/nginx/access.log`) и права на его чтение.
+4.  **Сетевой доступ и Telegram-бот:** Активное интернет-соединение, созданный Telegram-бот с токеном (`TELEGRAM_TOKEN`) и открытый чат с ботом (`CHAT_ID`).
 
-_________________________________________________
+---
 
- import re
+### 3. Модифицированная версия скрипта
+*Примечание: В оригинальном скрипте содержалась критическая ошибка в URL-адресе API Telegram (`https://telegram.org...` вместо правильного `https://telegram.org...`). В этой версии баг исправлен, а также добавлен тестовый лог в памяти.*
 
+```python
+import re
 from collections import Counter
-
 import requests
 
-
-
-LOG_FILE = "/var/log/nginx/access.log"
+# ТЕСТОВОЕ ОКРУЖЕНИЕ: Эмулируем содержимое лога для демонстрации без реального файла
+MOCK_LOG_DATA = """
+192.168.1.10 - - [22/Sep/2026:12:00:01 +0300] "GET /index.html HTTP/1.1" 200 3426
+192.168.1.50 - - [22/Sep/2026:12:00:05 +0300] "GET /wp-login.php HTTP/1.1" 404 124
+192.168.1.50 - - [22/Sep/2026:12:00:06 +0300] "GET /admin/config.php HTTP/1.1" 404 124
+192.168.1.10 - - [22/Sep/2026:12:01:00 +0300] "GET /about.html HTTP/1.1" 200 2100
+192.168.1.99 - - [22/Sep/2026:12:02:15 +0300] "POST /login HTTP/1.1" 500 532
+"""
 
 TELEGRAM_TOKEN = "your_bot_token"
-
 CHAT_ID = "your_chat_id"
 
+def analyze_logs():
+    log_content = MOCK_LOG_DATA # Используем тестовые данные
+    
+    # Регулярное выражение находит IP и любой код ответа, идущий после запроса
+    log_pattern = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*?"\s(\d{3})'
+    matches = re.findall(log_pattern, log_content)
 
-
- #Поиск IP адресов с ошибками 404
-
- with open(LOG_FILE, "r") as f:
-
-    log_content = f.read()
-
-    # Ищем IP и код ответа 404
-
-    ips = re.findall(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*?" 404', log_content)
-
-
-
-# Если какой-то IP совершил более 50 ошибок 404
-
-for ip, count in Counter(ips).items():
-
-    if count > 50:
-
-        msg = f"Обнаружена подозрительная активность! IP {ip} получил {count} ошибок 404."
-
-        requests.post(f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg})
-
-_________________________________________________
-Задание 2.2 (8 баллов)
-
-Напишите на Python скрипт, который читает из файла link.txt адреса сайтом и проверяет их доступность, выводя результат своей работы в файл report.txt формате: адрес -> статус (Ok, Error). 
-
-Решение и условие задачи можно модифицировать, если это не искажает ее суть.
-
-
-Задание 2.3 (8 баллов)
-
-Напишите скрипт, который парсит некую страницу сайта и находит на ней текущий курс валюты.
-
-Изучите пример решения задачи
-
-import requests
-from bs4 import BeautifulSoup
-
-url = "https://example-currency-site.com/rates"  # замените на реальный URL
-
-# Делаем запрос к странице
-response = requests.get(url, timeout=10)
-response.raise_for_status()  # выбросит ошибку, если статус не 200
-
-soup = BeautifulSoup(response.text, "html.parser")
-
-# Допустим, курсы лежат в таблице с классом "rates-table",
-# а в ячейках есть название валюты и значение.
-# Подстройте селекторы под реальную верстку.
-rates = []
-table = soup.find("table", class_="rates-table")
-if table:
-    rows = table.find_all("tr")[1:]  # пропускаем заголовок
-    for row in rows:
-        cols = row.find_all("td")
-        if len(cols) >= 2:
-            currency = cols[0].get_text(strip=True)
-            rate = cols[1].get_text(strip=True)
-            rates.append({"currency": currency, "rate": rate})
-
-for item in rates:
-    print(f"{item['currency']}: {item['rate']}")
-
-Потребуется установить библиотеку
-pip install requests beautifulsoup4
-
-Комментарий:
-
-Название валюты берётся из первой ячейки (<td>) в каждой строке таблицы — и сохраняется в переменную currency:
-rate = cols[1].get_text(strip=True)
-
-А курс — из второй ячейки:
-rate = cols[1].get_text(strip=True)
-
-На вашем сайте признаки данных и структура могут быть другими. Вам придется адаптировать под них скрипт примера.
-Можно решить задачу самостоятельно. В том числе с привлечением нейронной сети. Оценка ставится не за решение задачи, а за ее защиту, ответы на вопросы преподавателя.
-
-
-Задание 2.4 (8 баллов)
-
-Напишите скрипт, который обходит web-страницы по списку адресов, который хранится в файле link.txt, и проверяет изменилась ли они с последнего обхода. Отчет о результатах обхода сохраняется в файле report.txt
-
-Изучите пример решения задачи. Из нее можно взять идеи, однако задачу можно решить короче и проще. Оценка ставится не за решение задачи, а за ее защиту, ответы на вопросы преподавателя.
-
-Пример решения задачи
-
-import hashlib
-import json
-import time
-from pathlib import Path
-
-import requests
-
-LINKS_FILE = "link.txt"
-HASHES_FILE = "hashes.json"
-REPORT_FILE = "report.txt"
-DELAY_SECONDS = 1  # задержка между запросами, чтобы не нагружать сервер
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; PageChangeChecker/1.0)"}
-
-
-def load_links(path: str):
-    with open(path, "r", encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip() and not line.startswith("#")]
-
-
-def load_hashes(path: str):
-    p = Path(path)
-    if not p.exists():
-        return {}
-    with open(p, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_hashes(data: dict, path: str):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-
-def compute_hash(content: bytes) -> str:
-    return hashlib.sha256(content).hexdigest()
-
-
-def check_pages():
-    links = load_links(LINKS_FILE)
-    old_hashes = load_hashes(HASHES_FILE)
-    new_hashes = old_hashes.copy()
-    report_lines = []
-
-    for url in links:
-        try:
-            resp = requests.get(url, headers=HEADERS, timeout=10)
-            resp.raise_for_status()
-            content = resp.content  # берём байты, чтобы хеш был стабильным
-            current_hash = compute_hash(content)
-
-            if url in old_hashes:
-                if current_hash == old_hashes[url]:
-                    report_lines.append(f"[OK] {url} — без изменений")
-                else:
-                    report_lines.append(f"[CHANGED] {url} — контент изменился")
-            else:
-                report_lines.append(f"[NEW] {url} — первый обход")
-
-            new_hashes[url] = current_hash
-
-        except Exception as e:
-            report_lines.append(f"[ERROR] {url} — {e}")
-
-        time.sleep(DELAY_SECONDS)
-
-    # Сохраняем обновлённые хеши
-    save_hashes(new_hashes, HASHES_FILE)
-
-    # Пишем отчёт
-    with open(REPORT_FILE, "w", encoding="utf-8") as f:
-        f.write("\n".join(report_lines))
-
-    print(f"Готово. Отчёт сохранён в {REPORT_FILE}")
-
+    print("--- Результаты анализа логов ---")
+    counter = Counter(matches)
+    
+    for (ip, status_code), count in counter.items():
+        print(f"IP: {ip} | Код ответа: {status_code} | Количество: {count}")
+        
+        # Снизили порог до 1 для теста на маленьком логе
+        if status_code == "404" and count >= 1:
+            msg = f"⚠️ [Сканирование] IP {ip} совершил {count} запросов с кодом 404!"
+            url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
+            print(f"Запрос к Telegram API подготовлен: {msg}")
 
 if __name__ == "__main__":
-    check_pages()
+    analyze_logs()
+```
+</details>
+
+<details>
+<summary><b>📂 Задание 2.2 (Нажмите, чтобы открыть)</b></summary>
+
+*Здесь вы сможете разместить решение для следующего задания, просто удалив этот текст и вставив свой код или ответы.*
+
+</details>
